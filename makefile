@@ -17,7 +17,7 @@ CXX_MODULES=FluidSynth.cpp
 ifeq ($(USE_NATIVE_FLUIDSYNTH),0)
     FLAGS+=-I$(FLUIDSYNTH_PATH)/include
     # static link libfluidsynth
-    LDFLAGS+=$(FLUIDSYNTH_PATH)/lib/libfluidsynth.a
+    LDFLAGS+=
     FLUIDSYNTH_DEPS=$(FLUIDSYNTH_PATH)/lib/libfluidsynth.a
 else
     ifneq ($(FLUIDSYNTH_PATH),)
@@ -112,7 +112,7 @@ all: $(CHUG)
 
 $(CHUG): $(C_OBJECTS) $(CXX_OBJECTS) $(FLUIDSYNTH_DEPS)
 ifeq ($(CK_CHUGIN_STATIC),0)
-	$(LD) $(LDFLAGS) -o $@ $(C_OBJECTS) $(CXX_OBJECTS)
+	$(LD) $(LDFLAGS) -o $@ $^
 else
 	ar rv $@ $^
 	ranlib $@

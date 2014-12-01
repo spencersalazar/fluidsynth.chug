@@ -34,7 +34,7 @@ fun void track(int t)
 {
     FluidSynth m => rev;
     m => dac;
-    0.91 => m.gain;
+    0.125 => m.gain;
     m.open(sfont);
     
     while(min.read(msg, t))
