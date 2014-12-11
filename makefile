@@ -6,8 +6,10 @@ CHUGIN_NAME=FluidSynth
 C_MODULES=
 CXX_MODULES=FluidSynth.cpp
 LIBS=fluidsynth
+FLAGS+=-Ifluidsynth-static/include
+LDFLAGS+=-Lfluidsynth-static/lib $(addprefix -l,$(LIBS))
 # where the chuck headers are
-CK_SRC_PATH?=../chuck/include/
+CK_SRC_PATH?=chuck/include/
 
 
 # ---------------------------------------------------------------------------- #
@@ -58,8 +60,6 @@ ifneq (,$(strip $(filter linux-alsa,$(MAKECMDGOALS))))
 include makefile.linux
 endif
 
-
-LDFLAGS+=$(addprefix -l,$(LIBS))
 
 ifneq ($(CHUCK_DEBUG),)
 FLAGS+= -g
