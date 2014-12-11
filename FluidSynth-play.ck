@@ -4,7 +4,7 @@ NRev rev => dac;
 MidiFileIn min;
 MidiMsg msg;
 
-"HS_African_Percussion.sf2" => string sfont;
+"dx7piano.sf2" => string sfont;
 if(me.args() > 0) me.arg(0) => sfont;
 
 me.sourceDir() + "/bwv772.mid" => string filename;
@@ -28,7 +28,7 @@ while(done < min.numTracks())
 
 min.close();
 
-minute => now;
+second => now;
 
 fun void track(int t)
 {
@@ -45,7 +45,7 @@ fun void track(int t)
         if((msg.data1 & 0x90) == 0x90)
             m.noteOn(msg.data2, msg.data3, msg.data1&0x0F);
         //if((msg.data1 & 0x80) == 0x80)
-        //    m.noteOff(msg.data2, msg.data1&0x0F);
+        //m.noteOff(msg.data2, msg.data1&0x0F);
     }
     
     done++;

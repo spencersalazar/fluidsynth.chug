@@ -1,3 +1,5 @@
+FluidSynth.chug
+FluidSynth.o
 fluidsynth-static/bin/
 fluidsynth-static/fluidsynth-1.0.9/Makefile
 fluidsynth-static/fluidsynth-1.0.9/config.log

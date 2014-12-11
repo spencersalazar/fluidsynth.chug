@@ -38,9 +38,10 @@ public:
         m_srate = fs;
         
         m_settings = new_fluid_settings();
+        fluid_settings_setnum(m_settings, "synth.sample-rate", m_srate);
         m_synth = new_fluid_synth(m_settings);
         
-        fluid_synth_set_sample_rate(m_synth, m_srate);
+        //fluid_synth_set_sample_rate(m_synth, m_srate);
     }
     
     ~FluidSynth()
@@ -99,7 +100,7 @@ CK_DLL_QUERY( fluidsynth )
     // NOTE: if this is to be a UGen with more than 1 channel, 
     // e.g., a multichannel UGen -- will need to use add_ugen_funcf()
     // and declare a tickf function using CK_DLL_TICKF
-    /*
+    
     QUERY->add_mfun(QUERY, fluidsynth_open, "int", "open");
     QUERY->add_arg(QUERY, "string", "file");
     
@@ -118,7 +119,7 @@ CK_DLL_QUERY( fluidsynth )
     QUERY->add_mfun(QUERY, fluidsynth_noteOffChan, "void", "noteOff");
     QUERY->add_arg(QUERY, "int", "note");
     QUERY->add_arg(QUERY, "int", "chan");
-    */  
+    
     fluidsynth_data_offset = QUERY->add_mvar(QUERY, "int", "@f_data", false);
 
     // IMPORTANT: this MUST be called!
