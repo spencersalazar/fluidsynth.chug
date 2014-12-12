@@ -2,12 +2,32 @@
 # chugin name
 CHUGIN_NAME=FluidSynth
 
+# change this to 1 to use native fluidsynth (i.e. from system directories)
+USE_NATIVE_FLUIDSYNTH?=0
+
+ifeq ($(USE_NATIVE_FLUIDSYNTH),0)
+    FLUIDSYNTH_PATH?=fluidsynth-static
+endif
+
+
 # all of the c/cpp files that compose this chugin
 C_MODULES=
 CXX_MODULES=FluidSynth.cpp
-LIBS=fluidsynth
-FLAGS+=-Ifluidsynth-static/include
-LDFLAGS+=-Lfluidsynth-static/lib $(addprefix -l,$(LIBS))
+
+ifeq ($(USE_NATIVE_FLUIDSYNTH),0)
+    FLAGS+=-I$(FLUIDSYNTH_PATH)/include
+    # static link libfluidsynth
+    LDFLAGS+=$(FLUIDSYNTH_PATH)/lib/libfluidsynth.a
+    FLUIDSYNTH_DEPS=$(FLUIDSYNTH_PATH)/lib/libfluidsynth.a
+else
+    ifneq ($(FLUIDSYNTH_PATH),)
+        FLAGS+=-I$(FLUIDSYNTH_PATH)/include
+        LDFLAGS+=-L$(FLUIDSYNTH_PATH)/lib/
+    endif
+    FLUIDSYNTH_DEPS=
+    LDFLAGS+=-lfluidsynth
+endif
+
 # where the chuck headers are
 CK_SRC_PATH?=chuck/include/
 
@@ -90,25 +110,33 @@ CHUG=$(addsuffix $(SUFFIX),$(CHUGIN_NAME))
 
 all: $(CHUG)
 
-$(CHUG): $(C_OBJECTS) $(CXX_OBJECTS)
+$(CHUG): $(C_OBJECTS) $(CXX_OBJECTS) $(FLUIDSYNTH_DEPS)
 ifeq ($(CK_CHUGIN_STATIC),0)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $(C_OBJECTS) $(CXX_OBJECTS)
 else
 	ar rv $@ $^
 	ranlib $@
 endif
 
-$(C_OBJECTS): %.o: %.c
+$(C_OBJECTS): %.o: %.c $(FLUIDSYNTH_DEPS)
 	$(CC) $(FLAGS) -c -o $@ $<
 
-$(CXX_OBJECTS): %.o: %.cpp $(CK_SRC_PATH)/chuck_dl.h
+$(CXX_OBJECTS): %.o: %.cpp $(CK_SRC_PATH)/chuck_dl.h $(FLUIDSYNTH_DEPS)
 	$(CXX) $(FLAGS) -c -o $@ $<
+
+$(FLUIDSYNTH_PATH)/lib/libfluidsynth.a: 
+	make -C $(FLUIDSYNTH_PATH)
 
 install: $(CHUG)
 	mkdir -p $(CHUGIN_PATH)
 	cp $^ $(CHUGIN_PATH)
 	chmod 755 $(CHUGIN_PATH)/$(CHUG)
 
+test:
+	chuck --chugin:FluidSynth.chug FluidSynth-play.ck -v5
+
 clean: 
 	rm -rf $(C_OBJECTS) $(CXX_OBJECTS) $(CHUG) Release Debug
-
+ifeq ($(USE_NATIVE_FLUIDSYNTH),0)
+	make -C $(FLUIDSYNTH_PATH) clean
+endif

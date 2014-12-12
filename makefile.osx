@@ -1,9 +1,11 @@
 
-ARCHS?=x86_64
+ARCHS?=x86_64 i386
 ARCHOPTS=$(addprefix -arch ,$(ARCHS))
 
+FRAMEWORKS?=CoreAudio CoreMIDI CoreFoundation
+
 FLAGS+=-mmacosx-version-min=10.5 -D__MACOSX_CORE__ -I$(CK_SRC_PATH) $(ARCHOPTS)
-LDFLAGS+=-mmacosx-version-min=10.5 -shared -lstdc++ $(ARCHOPTS)
+LDFLAGS+=-mmacosx-version-min=10.5 -shared -lstdc++ $(ARCHOPTS) $(addprefix -framework ,$(FRAMEWORKS)) -lreadline
 
 LD=clang++
 CXX=clang++
