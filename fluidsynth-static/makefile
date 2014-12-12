@@ -6,7 +6,7 @@ STAGING_SUBDIRS=$(addprefix $(STAGING_DIR)/,bin include lib share)
 
 all: 
 	cd $(FLUIDSYNTH_DIR) &&\
- CFLAGS="-arch i386 -arch x86_64" LDFLAGS="-arch i386 -arch x86_64" ./configure --prefix=$(STAGING_DIR) --enable-static &&\
+ CFLAGS="$(ARCHOPTS)" LDFLAGS="$(ARCHOPTS)" ./configure --prefix=$(STAGING_DIR) --enable-static &&\
  make &&\
  make install\
 

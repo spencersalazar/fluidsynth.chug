@@ -125,7 +125,7 @@ $(CXX_OBJECTS): %.o: %.cpp $(CK_SRC_PATH)/chuck_dl.h $(FLUIDSYNTH_DEPS)
 	$(CXX) $(FLAGS) -c -o $@ $<
 
 $(FLUIDSYNTH_PATH)/lib/libfluidsynth.a: 
-	make -C $(FLUIDSYNTH_PATH)
+	make -C $(FLUIDSYNTH_PATH) ARCHOPTS='$(ARCHOPTS)'
 
 install: $(CHUG)
 	mkdir -p $(CHUGIN_PATH)
